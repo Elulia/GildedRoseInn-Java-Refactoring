@@ -48,71 +48,74 @@ public class GildedRose
 	}
 
 	public static void updateQualityForItem(Item item) {
-		if ((!"Aged Brie".equals(item.getName()))
-				&& !"Backstage passes to a TAFKAL80ETC concert".equals(item.getName()))
-		{
-			if (item.getQuality() > 0)
-			{
-				if (!"Sulfuras, Hand of Ragnaros".equals(item.getName()))
-				{
-					item.setQuality(item.getQuality() - 1);
-				}
-			}
-		}
-		else
-		{
+		if (("Aged Brie".equals(item.getName())) || "Backstage passes to a TAFKAL80ETC concert".equals(item.getName())) {
 			if (item.getQuality() < MAX_QUALITY)
 			{
-				item.setQuality(item.getQuality() + 1);
+				incrementQualityByOneForItem(item);
 
 				if ("Backstage passes to a TAFKAL80ETC concert".equals(item.getName()))
 				{
 					if (item.getSellIn() < SELLIN_THRESHOLD_FOR_BACKSTAGE_QUALITY_INCREASING_TWICE_AS_FAST)
 					{
-						if (item.getQuality() < MAX_QUALITY)
-						{
-							item.setQuality(item.getQuality() + 1);
-						}
+						increaseQualityForItem(item);
 					}
 
 					if (item.getSellIn() < SELLIN_THRESHOLD_FOR_BACKSTAGE_QUALITY_INCREASING_THREE_TIMES_AS_FAST)
 					{
-						if (item.getQuality() < MAX_QUALITY)
-						{
-							item.setQuality(item.getQuality() + 1);
-						}
+						increaseQualityForItem(item);
 					}
 				}
+			}
+		} else {
+			if (!"Sulfuras, Hand of Ragnaros".equals(item.getName()))
+			{
+				decreaseQualityForItem(item);
 			}
 		}
 
 		if (item.getSellIn() < 0)
 		{
-			if (!"Aged Brie".equals(item.getName()))
+			if ("Aged Brie".equals(item.getName())) {
+				increaseQualityForItem(item);
+			} 
+			else 
 			{
-				if (!"Backstage passes to a TAFKAL80ETC concert".equals(item.getName()))
+				if ("Backstage passes to a TAFKAL80ETC concert".equals(item.getName()))
 				{
-					if (item.getQuality() > 0)
-					{
-						if (!"Sulfuras, Hand of Ragnaros".equals(item.getName()))
-						{
-							item.setQuality(item.getQuality() - 1);
-						}
+					item.setQuality(0);
+				} 
+				else {
+					if (!"Sulfuras, Hand of Ragnaros".equals(item.getName()))
+					{		
+						decreaseQualityForItem(item);
 					}
-				}
-				else
-				{
-					item.setQuality(item.getQuality() - item.getQuality());
-				}
-			}
-			else
-			{
-				if (item.getQuality() < MAX_QUALITY)
-				{
-					item.setQuality(item.getQuality() + 1);
 				}
 			}
 		}
+	}
+
+	//decrease quality only if quality is positive
+	public static void decreaseQualityForItem(Item item) {
+		if (item.getQuality() > 0)
+		{
+			decrementQualityByOneForItem(item);
+		}
+	}
+
+	public static void decrementQualityByOneForItem(Item item) {
+		item.setQuality(item.getQuality() - 1);
+	}
+
+	// increase quality only if the max quality isn't reach
+	public static void increaseQualityForItem(Item item) {
+		if (item.getQuality() < MAX_QUALITY)
+		{
+			incrementQualityByOneForItem(item);
+		}
+	}
+
+	public static void incrementQualityByOneForItem(Item item) {
+		item.setQuality(item.getQuality() + 1);
 	}
 
 	public static void updateSellInForItem(Item item) {
